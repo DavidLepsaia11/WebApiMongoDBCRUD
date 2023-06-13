@@ -4,32 +4,32 @@ using System.Linq.Expressions;
 
 namespace WebApiMongoDBCRUD.Repository
 {
-    public class Repository<T> : IRepository<T>
-        where T : IEntity
+    public class RepositoryBase<TEntity> : IRepository<TEntity>
+        where TEntity : IEntity
     {
-        private readonly IMongoCollection<T> _collection;
+        private readonly IMongoCollection<TEntity> _collection;
 
-        private string CollectionName => $"{typeof(T).Name.ToLower()}s";
+        private string CollectionName => $"{typeof(TEntity).Name.ToLower()}s";
 
-        public Repository(IDatabaseSettings databaseSettings, IMongoClient mongoClient)
+        public RepositoryBase(IDatabaseSettings databaseSettings, IMongoClient mongoClient)
         {
             var database = mongoClient.GetDatabase(databaseSettings.DatabaseName);
-            var raime = typeof(T).Name.ToLower();
-            _collection = database.GetCollection<T>(CollectionName);
+            var raime = typeof(TEntity).Name.ToLower();
+            _collection = database.GetCollection<TEntity>(CollectionName);
         }
 
-        public T Create(T entity)
+        public TEntity Create(TEntity entity)
         {
             _collection.InsertOne(entity);
             return entity;  
         }
 
-        public ICollection<T> GetAll()
+        public ICollection<TEntity> GetAll()
         {
            return  _collection.Find(entities => true).ToList();
         }
 
-        public T GetById(string id)
+        public TEntity GetById(string id)
         {
             return _collection.Find(entity => entity.Id == id).FirstOrDefault();
         }
@@ -39,12 +39,12 @@ namespace WebApiMongoDBCRUD.Repository
             _collection.DeleteOne(id);
         }
 
-        public void Update(string id, T entity)
+        public void Update(string id, TEntity entity)
         {
             _collection.ReplaceOne(entity => entity.Id == id , entity);
         }
 
-        public ICollection<T> Filter(Expression<Func<T, bool>> predicate)
+        public ICollection<TEntity> Filter(Expression<Func<TEntity, bool>> predicate)
         {
             return _collection.Find(predicate).ToList();
         }

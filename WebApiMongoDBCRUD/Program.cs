@@ -2,7 +2,7 @@ using Microsoft.Extensions.Options;
 using MongoDB.Driver;
 using WebApiMongoDBCRUD.Models;
 using WebApiMongoDBCRUD.Repository;
-
+using WebApiMongoDBCRUD.Service;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -15,7 +15,9 @@ builder.Services.Configure<DatabaseSettings>(
 builder.Services.AddSingleton<IDatabaseSettings>(obj => obj.GetRequiredService<IOptions<DatabaseSettings>>().Value);
 
 builder.Services.AddSingleton<IMongoClient>(s => new MongoClient(builder.Configuration.GetValue<string>("DatabaseSettings:ConnectionString")));
-builder.Services.AddScoped<IRepository<Student>, Repository<Student>>();
+
+builder.Services.AddTransient<IStudentRepository, StudentRepository>();
+builder.Services.AddTransient<IStudentService, StudentService>();
 
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle

@@ -2,8 +2,8 @@
 {
     public interface ICommandService<TEntity>
     {
-        TEntity Create(TEntity student);
-        void Update(string id, TEntity student);
+        TEntity Create(TEntity entity);
+        void Update(string id, TEntity entity);
         void Remove(string id);
     }
 }
