@@ -1,5 +1,6 @@
 ﻿using WebApiMongoDBCRUD.Models;
 using MongoDB.Driver;
+using System.Linq.Expressions;
 
 namespace WebApiMongoDBCRUD.Repository
 {
@@ -23,7 +24,7 @@ namespace WebApiMongoDBCRUD.Repository
             return entity;  
         }
 
-        public IList<T> GetAll()
+        public ICollection<T> GetAll()
         {
            return  _collection.Find(entities => true).ToList();
         }
@@ -41,6 +42,11 @@ namespace WebApiMongoDBCRUD.Repository
         public void Update(string id, T entity)
         {
             _collection.ReplaceOne(entity => entity.Id == id , entity);
+        }
+
+        public ICollection<T> Filter(Expression<Func<T, bool>> predicate)
+        {
+            return _collection.Find(predicate).ToList();
         }
     }
 }

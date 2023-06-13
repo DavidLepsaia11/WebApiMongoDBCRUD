@@ -1,14 +1,16 @@
-﻿using WebApiMongoDBCRUD.Models;
+﻿using System.Linq.Expressions;
+using WebApiMongoDBCRUD.Models;
 
 namespace WebApiMongoDBCRUD.Repository
 {
-    public interface IRepository<T>
-        where T : IEntity
+    public interface IRepository<TEntity>
+        where TEntity : IEntity
     {
-        IList<T> GetAll();
-        T GetById(string id);
-        T Create(T student);
-        void Update(string id, T student);
+        ICollection<TEntity> GetAll();
+        ICollection<TEntity> Filter(Expression<Func<TEntity ,bool>> predicate);
+        TEntity GetById(string id);
+        TEntity Create(TEntity student);
+        void Update(string id, TEntity student);
         void Remove(string id);
     }
 }
